@@ -8,7 +8,7 @@ from torch.nn import functional as F
 ####################################################################
 
 class ConvLarge(nn.Module):
-    def __init__(self, input_dim=3, num_classes=10, stochastic=True, top_bn=False):
+    def __init__(self, input_dim=1, num_classes=10, stochastic=True, top_bn=False):
         super(ConvLarge, self).__init__()
         self.block1 = self.conv_block(input_dim, 128, 3, 1, 1, 0.1)
         self.block2 = self.conv_block(128, 128, 3, 1, 1, 0.1)
