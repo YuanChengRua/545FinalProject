@@ -71,7 +71,7 @@ train_loader, test_loader = dataloader1(
 # Build model and optimizer
 logger.info("Building model and optimizer...")
 if args.architecture == "convlarge":
-    model = ConvLarge(num_classes=args.num_classes, stochastic=True)
+    model = ConvLarge(num_classes=args.num_classes)
 elif args.architecture == "shakeshake":
     model = shakeshake26(num_classes=args.num_classes)
 if args.gpu:
