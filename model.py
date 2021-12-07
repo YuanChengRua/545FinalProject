@@ -8,59 +8,40 @@ from torch.nn import functional as F
 ####################################################################
 
 class ConvLarge(nn.Module):
-    def __init__(self, input_dim=1, num_classes=10, stochastic=True, top_bn=False):
-        super(ConvLarge, self).__init__()
-        self.block1 = self.conv_block(input_dim, 128, 3, 1, 1, 0.1)
-        self.block2 = self.conv_block(128, 128, 3, 1, 1, 0.1)
-        self.block3 = self.conv_block(128, 128, 3, 1, 1, 0.1)
+    def __init__(self, num_class):
+        super().__init__()
+        self.block1 = self.conv_block(1, out_dim = 128)
+        self.block2 = self.conv_block(128, out_dim = 128)
+        self.block3 = self.conv_block(128, 128)
 
-        self.block4 = self.conv_block(128, 256, 3, 1, 1, 0.1)
-        self.block5 = self.conv_block(256, 256, 3, 1, 1, 0.1)
-        self.block6 = self.conv_block(256, 256, 3, 1, 1, 0.1)
 
-        self.block7 = self.conv_block(256, 512, 3, 1, 0, 0.1)
-        self.block8 = self.conv_block(512, 256, 1, 1, 0, 0.1)
-        self.block9 = self.conv_block(256, 128, 1, 1, 0, 0.1)
+        self.block4 = self.conv_block(128, 256)
+        self.block5 = self.conv_block(256, 256)
+        self.block6 = self.conv_block(256, 128)
 
-        self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
+        self.maxpool = nn.Sequential(*[nn.MaxPool2d(kernel_size=2, stride=2), nn.Dropout2d()])
+        self.fc = nn.Sequential(nn.Linear(128, num_class))
+        self.average_pool = nn.AdaptiveAvgPool2d((1, 1))
 
-        maxpool = [nn.MaxPool2d(kernel_size=2, stride=2)]
-        if stochastic:
-            maxpool.append(nn.Dropout2d())
-        self.maxpool = nn.Sequential(*maxpool)
-
-        classifier = [nn.Linear(128, num_classes)]
-        if top_bn:
-            classifier.append(nn.BatchNorm1d(num_classes))
-        self.classifier = nn.Sequential(*classifier)
-
-    def conv_block(self, input_dim, out_dim, kernel_size=3, stride=1, padding=1, lrelu_slope=0.01):
+    def conv_block(self, input_dim, out_dim, kernel_size=3, stride=2, padding=2):  # 原来的是0.01 stride = 1, padding = 1, 用的是leakyrelu
         return nn.Sequential(
-                nn.Conv2d(input_dim, out_dim, kernel_size, stride, padding, bias=False),
-                nn.BatchNorm2d(out_dim),
-                nn.LeakyReLU(inplace=True, negative_slope=lrelu_slope)
-        )
-
+            nn.Conv2d(input_dim, out_dim, kernel_size, stride, padding, bias=False),
+            nn.BatchNorm2d(out_dim),  # 防止 saturation
+            nn.ReLU(inplace=True))
+    
     def forward(self, x):
-        out = self.block1(x)
-        out = self.block2(out)
-        out = self.block3(out)
-        out = self.maxpool(out)
-
-        out = self.block4(out)
-        out = self.block5(out)
-        out = self.block6(out)
-        out = self.maxpool(out)
-
-        out = self.block7(out)
-        out = self.block8(out)
-        out = self.block9(out)
-
-        feature = self.avg_pool(out)
-        feature = feature.view(feature.shape[0], -1)
-        logits = self.classifier(feature)
-        
-        return logits
+        z = self.block1(x)
+        z = self.block2(z)
+        z = self.block3(z)
+        z = self.maxpool(z)
+        z = self.block4(z)
+        z = self.block5(z)
+        z = self.block6(z)
+        z = self.average_pool(z)
+        temp = z.shape[0]
+        z = z.view(temp, -1)
+        z = self.fc(z)
+        return z
 
 ######################################################################
 ###################### Shake-Shake Architecture ######################
