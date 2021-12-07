@@ -8,7 +8,7 @@ from torch.nn import functional as F
 ####################################################################
 
 class ConvLarge(nn.Module):
-    def __init__(self, num_class):
+    def __init__(self, num_classes):
         super().__init__()
         self.block1 = self.conv_block(1, out_dim = 128)
         self.block2 = self.conv_block(128, out_dim = 128)
@@ -20,7 +20,7 @@ class ConvLarge(nn.Module):
         self.block6 = self.conv_block(256, 128)
 
         self.maxpool = nn.Sequential(*[nn.MaxPool2d(kernel_size=2, stride=2), nn.Dropout2d()])
-        self.fc = nn.Sequential(nn.Linear(128, num_class))
+        self.fc = nn.Sequential(nn.Linear(128, num_classes))
         self.average_pool = nn.AdaptiveAvgPool2d((1, 1))
 
     def conv_block(self, input_dim, out_dim, kernel_size=3, stride=2, padding=2):  # 原来的是0.01 stride = 1, padding = 1, 用的是leakyrelu
