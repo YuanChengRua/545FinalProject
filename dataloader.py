@@ -407,7 +407,7 @@ def dataloader1(dset, path, bs, num_workers, num_labels, num_iters, return_unlab
             num_iters = num_iters,
             batch_size = bs,
             return_unlabel = return_unlabel,
-            transform = train_transform['dset'],
+            transform = train_transform[dset],
             save_path = save_path,
             **train_kwargs[dset]
     )
