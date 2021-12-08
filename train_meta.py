@@ -19,7 +19,7 @@ parser.add_argument('--mix-up', action='store_true', help='Use mix-up augmentati
 parser.add_argument('--alpha', type=float, default=1., help='Concentration parameter of Beta distribution')
 parser.add_argument('--weight', type=float, default=1., help='re-weighting scalar for the additional loss')
 # Training setting
-parser.add_argument('--total-steps', type=int, default=400000, help='Start step (for resume)')
+parser.add_argument('--total-steps', type=int, default=50000, help='Start step (for resume)')
 parser.add_argument('--start-step', type=int, default=0, help='Start step (for resume)')
 parser.add_argument('--batch-size', type=int, default=128, help='Batch size')
 parser.add_argument('--epsilon', type=float, default=1e-2, help='epsilon for gradient estimation')
