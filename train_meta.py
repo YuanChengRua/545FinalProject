@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='mnist', choices=['mnist', 'caltech256', 'svhn'])
 parser.add_argument('--data-path', type=str, default='./data', help='Data path')
 parser.add_argument('--num-label', type=int, default=4000, help='Number of labeled data')
-parser.add_argument('-a', '--architecture', type=str, default='convlarge', choices=['convlarge', 'caltech256'], help='Network architecture')
+parser.add_argument('-a', '--architecture', type=str, default='convlarge', choices=['convlarge', 'vgg16'], help='Network architecture')
 parser.add_argument('--mix-up', action='store_true', help='Use mix-up augmentation')
 parser.add_argument('--alpha', type=float, default=1., help='Concentration parameter of Beta distribution')
 parser.add_argument('--weight', type=float, default=1., help='re-weighting scalar for the additional loss')
@@ -72,7 +72,7 @@ train_loader, test_loader = dataloader1(
 logger.info("Building model and optimizer...")
 if args.architecture == "convlarge":
     model = ConvLarge(num_classes=args.num_classes)
-elif args.architecture == "caltech256":
+elif args.architecture == "vgg16":
     model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg16', pretrained = False)
 if args.gpu:
     model.cuda()
