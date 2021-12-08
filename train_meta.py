@@ -11,7 +11,7 @@ from model import ConvLarge, shakeshake26
 
 parser = argparse.ArgumentParser()
 # Basic configuration
-parser.add_argument('--dataset', type=str, default='mnist', choices=['mnist', 'cifar100', 'svhn'])
+parser.add_argument('--dataset', type=str, default='mnist', choices=['mnist', 'caltech256', 'svhn'])
 parser.add_argument('--data-path', type=str, default='./data', help='Data path')
 parser.add_argument('--num-label', type=int, default=4000, help='Number of labeled data')
 parser.add_argument('-a', '--architecture', type=str, default='convlarge', choices=['convlarge', 'shakeshake'], help='Network architecture')
