@@ -331,7 +331,7 @@ train_transform = {
                 transforms.RandomCrop(32, padding=4),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor()
-                # transforms.Normalize(*meanstd['cifar10'])
+                transforms.Normalize((0.1307,), (0.3081,))
         ]),
         'fmnist': transforms.Compose([
                 transforms.RandomCrop(32, padding=4),
@@ -417,8 +417,9 @@ def dataloader1(dset, path, bs, num_workers, num_labels, num_iters, return_unlab
     train_loader = DataLoader(train_dataset, batch_size=bs, num_workers=num_workers, shuffle=False)
 
     test_transform = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
             transforms.ToTensor()
-            # transforms.Normalize(*meanstd[dset])
+            transforms.Normalize((0.1307,), (0.3081,))
     ])
     test_dataset = test_dset[dset](root=path, transform=test_transform, **test_kwargs[dset])
     test_loader = DataLoader(test_dataset, batch_size=100, num_workers=num_workers, shuffle=False)
@@ -436,7 +437,3 @@ train_loader, test_loader = dataloader1(
         save_path = './content/drive/MyDrive/eecs545dataset'
 )
 
-a,b,c,d = next(train_loader)
-a
-
-next(train_loader)
